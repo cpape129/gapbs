@@ -47,6 +47,14 @@ class Bitmap {
       new_val = old_val | ((uint64_t) 1l << bit_offset(pos));
     } while (!compare_and_swap(start_[word_offset(pos)], old_val, new_val));
   }
+  
+  void reset_bit_atomic(size_t pos) {
+    uint64_t old_val, new_val;
+    do {
+      old_val = start_[word_offset(pos)];
+      new_val = old_val & ~((uint64_t) 1l << bit_offset(pos));
+    } while (!compare_and_swap(start_[word_offset(pos)], old_val, new_val));
+  }
 
   bool get_bit(size_t pos) const {
     return (start_[word_offset(pos)] >> bit_offset(pos)) & 1l;
